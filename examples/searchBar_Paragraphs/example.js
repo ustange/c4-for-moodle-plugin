@@ -42,7 +42,7 @@ require(['../config'], function(config) {
         var tabs = [{
                 name: "search results",
                 // here we use the widget from Github directly for demonstration purposes. You should avoid this and instead clone the visualization-widgets repository into your project or add it as submodule.
-                url: "http://localhost/moodle/local/eexcess/visualization-widgets-master-16-11-2015/visualization-widgets-master/SearchResultListVis/index.html",
+                url: "https://rawgit.com/megamuf/visualization-widgets-for-moodle-plugin/master/SearchResultListVis/index.html",
                 icon: "http://rawgit.com/EEXCESS/visualization-widgets/master/SearchResultListVis/icon.png"
             },
             {
