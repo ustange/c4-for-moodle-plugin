@@ -42,14 +42,14 @@ require(['../config'], function(config) {
         var tabs = [{
                 name: "search results",
                 // here we use the widget from Github directly for demonstration purposes. You should avoid this and instead clone the visualization-widgets repository into your project or add it as submodule.
-                url: "https://rawgit.com/megamuf/visualization-widgets-for-moodle-plugin/master/SearchResultListVis/index.html",
-                icon: "http://rawgit.com/EEXCESS/visualization-widgets/master/SearchResultListVis/icon.png"
+                url: "https://rawgit.com/megamuf/c4-for-moodle-plugin/master/examples/searchBar_Paragraphs/example.js",
+                icon: "https://rawgit.com/EEXCESS/visualization-widgets/master/SearchResultListVis/icon.png"
             },
             {
                 name: "dashboard",
                 // here we use the widget from Github directly for demonstration purposes. You should avoid this and instead clone the visualization-widgets repository into your project or add it as submodule.
                 url: "https://eexcess.github.io/visualization-widgets-files/Dashboard/index.html",
-                icon: "http://rawgit.com/EEXCESS/visualization-widgets/master/Dashboard/icon.png",
+                icon: "https://rawgit.com/EEXCESS/visualization-widgets/master/Dashboard/icon.png",
                 deferLoading: true
             },
 //    {
@@ -61,8 +61,8 @@ require(['../config'], function(config) {
             {
                 name: "facet scape",
                 // here we use the widget from Github directly for demonstration purposes. You should avoid this and instead clone the visualization-widgets repository into your project or add it as submodule.
-                url: "http://rawgit.com/EEXCESS/visualization-widgets/master/FacetScape/index.html",
-                icon: "http://rawgit.com/EEXCESS/visualization-widgets/master/FacetScape/icon.png",
+                url: "https://rawgit.com/EEXCESS/visualization-widgets/master/FacetScape/index.html",
+                icon: "https://rawgit.com/EEXCESS/visualization-widgets/master/FacetScape/icon.png",
                 deferLoading: true
             }];
         // initialize the searchBar with the specified tabs and the path to the image folder
