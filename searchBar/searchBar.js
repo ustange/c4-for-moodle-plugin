@@ -237,7 +237,7 @@ define(['jquery', 'jquery-ui', 'tag-it', 'c4/APIconnector', 'c4/iframes', 'c4/Qu
                     loader.hide();
                     result_indicator.text(response.data.totalResults + ' results');
                     result_indicator.show();
-                    //util.setQuery(lastQuery.contextKeywords,0,lastQuery.origin);
+                    util.setQuery(lastQuery.contextKeywords,0,lastQuery.origin);
                     window.console.log('last query', lastQuery);
                     var sendHeightBar = bar[0].clientHeight;
                     window.parent.postMessage({event: 'eexcess.searchBarhei',data:sendHeightBar},'*');
