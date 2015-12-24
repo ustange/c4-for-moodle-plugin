@@ -32,6 +32,7 @@ define(['jquery', 'd3', 'c4/QueryCrumbs/querycrumbs-settings'], function($, d3, 
         height: QueryCrumbsConfiguration.dimensions.circle_r * 2 + QueryCrumbsConfiguration.dimensions.rectInfoVertPadding + QueryCrumbsConfiguration.dimensions.rectInfoFontSize + 3,
         INTERACTION: {
             onClick: function(d, i) {
+                window.postMessage({event:'crumbClicked',data:""},'*')
                 self.currentNode = d;
                 self.currentIdx = d.rID;
                 d3.select(this.parentNode).selectAll(".queryCircleBorder").attr("stroke-width", 1);
@@ -46,7 +47,7 @@ define(['jquery', 'd3', 'c4/QueryCrumbs/querycrumbs-settings'], function($, d3, 
                 }
                 self.setHistory({history: self.historyData, base_color: self.visualData[0].base_color, currentQueryID: query.queryID});
                 query.origin = {
-                    module: "QueryCrumbs"
+                    module: "EEXCESS - Moodle Plugin QueryCrumbs"
                 };
                 self.navigateQueryCallback(query);
             },
