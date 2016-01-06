@@ -5,7 +5,8 @@
  */
 define(['jquery', 'jquery-ui', 'tag-it', 'c4/APIconnector', 'c4/iframes', 'c4/QueryCrumbs/querycrumbs'], function($, ui, tagit, api, iframes, qc) {
     var interests = undefined;
-
+    
+    
     var util = {
 // flag to determine if queries should be surpressed
         preventQuery: false,
@@ -14,6 +15,15 @@ define(['jquery', 'jquery-ui', 'tag-it', 'c4/APIconnector', 'c4/iframes', 'c4/Qu
         // a temporarily stored set of contextKeywords
         cachedQuery: null,
         popupTimer: null,
+        
+        addRemoveOverflow: function(hei){
+            if(hei>=100){
+                
+                $('#eexcess_searchBar').css({'overflow-y':'scroll'})
+            } else{
+                $('#eexcess_searchBar').css({'overflow-y':'hidden'})
+            }
+        },
         
         fadeOutPopup: function(delay) {
             if (typeof delay === 'undefined') {
@@ -39,6 +49,7 @@ define(['jquery', 'jquery-ui', 'tag-it', 'c4/APIconnector', 'c4/iframes', 'c4/Qu
             ui_bar.popupBubbleClose.hide();
         },
         addCategoriesToProfile: function(query) {
+            
             var categories = new Set();
             query.contextKeywords.forEach(function(keyword) {
                 if (keyword.hasOwnProperty('categories')) {
@@ -50,6 +61,7 @@ define(['jquery', 'jquery-ui', 'tag-it', 'c4/APIconnector', 'c4/iframes', 'c4/Qu
             settings.profile.addCategories(Array.from(categories));
         },
         processQuery: function(query, callback) {
+            
             // add categories to profile
             if (ui_content.contentArea.is(':visible')) {
                 this.addCategoriesToProfile(query);
@@ -72,7 +84,9 @@ define(['jquery', 'jquery-ui', 'tag-it', 'c4/APIconnector', 'c4/iframes', 'c4/Qu
                 }
                 cleanedOutput.contextKeywords.push(newKeyword);
             });
+            
             settings.queryFn(cleanedOutput, callback);
+            
         },
         focusBlurDelayTimer: null,
         /**
@@ -103,6 +117,7 @@ define(['jquery', 'jquery-ui', 'tag-it', 'c4/APIconnector', 'c4/iframes', 'c4/Qu
          * @returns {undefined}
          */
         queryUpdater: function() {
+            
             ui_bar.loader.show();
             ui_bar.result_indicator.hide();
             util.hidePopup();
@@ -152,6 +167,7 @@ define(['jquery', 'jquery-ui', 'tag-it', 'c4/APIconnector', 'c4/iframes', 'c4/Qu
          * @returns {undefined}
          */
         setQuery: function(contextKeywords, delay, origin) {
+            
             if (typeof delay === 'undefined') {
                 delay = settings.queryDelay;
             }
@@ -215,7 +231,9 @@ define(['jquery', 'jquery-ui', 'tag-it', 'c4/APIconnector', 'c4/iframes', 'c4/Qu
                             util.showPopup();
                             if (ui_content.contentArea.is(':visible')) {
                                 iframes.sendMsgAll({event: 'eexcess.newResults', data: results});
-                            }
+                            }/*else if (!ui_content.contentArea.is(':visible')) {
+                                iframes.sendMsgAll({event: 'eexcess.newResults', data: results});
+                            }*/
                         } else {
                             ui_bar.loader.hide();
                             ui_bar.result_indicator.text('error');
@@ -447,6 +465,7 @@ define(['jquery', 'jquery-ui', 'tag-it', 'c4/APIconnector', 'c4/iframes', 'c4/Qu
         popupBubble: null,
         popupBubbleClose: null
     };
+    
     var ui_content = {
         contentArea: null,
         $jQueryTabsHeader: null,
@@ -559,9 +578,9 @@ define(['jquery', 'jquery-ui', 'tag-it', 'c4/APIconnector', 'c4/iframes', 'c4/Qu
                 ui.tag.find('.ui-icon-close').css('background-image', 'url("' + settings.imgPATH + 'ui-icons_cd0a0a_256x240.png")');
                 if (!util.preventQuery) {
                     util.queryUpdater();
-                    sendHeightBar = ui_bar.bar[0].clientHeight;
-                    //window.console.log('height after tag',sendHeightBar);
-                    window.parent.postMessage({event: 'eexcess.searchBarhei',data:sendHeightBar},'*');
+                    //window.console.log('height after tag',ui_bar.bar[0].clientHeight);
+                    util.addRemoveOverflow(ui_bar.bar[0].clientHeight);
+                    window.parent.postMessage({event: 'eexcess.searchBarhei',data:ui_bar.bar[0].clientHeight},'*');
                 }
                 var data = ui.tag.data('properties');
                 ui.tag.hover(
@@ -582,9 +601,9 @@ define(['jquery', 'jquery-ui', 'tag-it', 'c4/APIconnector', 'c4/iframes', 'c4/Qu
             afterTagRemoved: function(e, ui) {
                 if (!util.preventQuery) {
                     util.queryUpdater();
-                    sendHeightBar = ui_bar.bar[0].clientHeight;
-                    //window.console.log('height tag remove',sendHeightBar);
-                    window.parent.postMessage({event: 'eexcess.searchBarhei',data:sendHeightBar},'*');
+                    util.addRemoveOverflow(ui_bar.bar[0].clientHeight);
+                    //window.console.log('height tag remove',ui_bar.bar[0].clientHeight);
+                    window.parent.postMessage({event: 'eexcess.searchBarhei',data:ui_bar.bar[0].clientHeight},'*');
                 }
                 if (popup_dim_pos.control !== 'custom') {
                     popup_dim_pos.resize();
@@ -638,13 +657,12 @@ define(['jquery', 'jquery-ui', 'tag-it', 'c4/APIconnector', 'c4/iframes', 'c4/Qu
         //ui_bar.window_controls.append([maximize, custom, fullheight_left, fullheight_right, fullwidth]);
         //ui_bar.right.append(ui_bar.window_controls);
         ui_bar.logo = $('<img id="eexcess_logo" src="' + settings.imgPATH + 'eexcess_Logo.png" />');
+        
         ui_bar.right.append(ui_bar.logo);
         ui_bar.loader = $('<img id="eexcess_loader" src="' + settings.imgPATH + 'eexcess_loader.gif" />').hide();
         ui_bar.right.append(ui_bar.loader);
         ui_bar.result_indicator = $('<a id="eexcess_result_indicator" href="#">16 results</a>').click(function(e) {
-            
-            sendHeightBar = ui_bar.bar[0].clientHeight;
-                window.parent.postMessage({event: 'eexcess.searchBarhei',data:sendHeightBar},'*');
+            window.parent.postMessage({event: 'eexcess.searchBarhei',data:ui_bar.bar[0].clientHeight},'*');
             e.preventDefault();
             util.hidePopup();
             //ui_bar.window_controls.show();
@@ -675,12 +693,9 @@ define(['jquery', 'jquery-ui', 'tag-it', 'c4/APIconnector', 'c4/iframes', 'c4/Qu
             var qc_div = $('<div id="queryCrumbs"></div>');
             ui_bar.right.append(qc_div);
             qc.init(qc_div.get(0), function(query) {
-                
                 util.setQuery(query.profile.contextKeywords, 0, query.origin);
-                
-                sendHeightBar = ui_bar.bar[0].clientHeight;
-                    window.parent.postMessage({event: 'eexcess.searchBarhei',data:sendHeightBar},'*');
-                    window.parent.postMessage({event: 'eexcess.openResultsBar',data:""},'*');
+                window.parent.postMessage({event: 'eexcess.searchBarhei',data:ui_bar.bar[0].clientHeight},'*');
+                window.parent.postMessage({event: 'eexcess.openResultsBar',data:""},'*');
                 if (!ui_content.contentArea.is(':visible')) {
                     ui_content.contentArea.show('fast');
                     api.sendLog(api.logInteractionType.moduleOpened, {
@@ -733,8 +748,8 @@ define(['jquery', 'jquery-ui', 'tag-it', 'c4/APIconnector', 'c4/iframes', 'c4/Qu
             }, settings.focusBlurDelay);
         });
         $('body').append(ui_bar.bar);
-        var sendHeightBar = ui_bar.bar[0].clientHeight;
-            window.parent.postMessage({event: 'eexcess.searchBarhei',data:sendHeightBar},'*');
+        window.parent.postMessage({event: 'eexcess.searchBarhei',data:ui_bar.bar[0].clientHeight},'*');
+            
         // set background image for new tag
         var $tag_input = $('#eexcess_searchBar input.ui-widget-content');
         $tag_input.css('background-image', 'url("' + settings.imgPATH + 'plus.png")');
@@ -922,42 +937,43 @@ define(['jquery', 'jquery-ui', 'tag-it', 'c4/APIconnector', 'c4/iframes', 'c4/Qu
     window.onmessage = function(msg) {
         // visualization has triggered a query -> widgets must be visible
         if (msg.data.event && msg.data.event === 'eexcess.queryTriggered') {
+            //console.log('top',ui_bar.bar[0].clientHeight)
             lastQuery = msg.data.data;
+            //console.log('lastquery first',lastQuery.contextKeywords[0])
+            util.preventQuery = true;
+                    ui_bar.taglist.tagit('removeAll');
+                    ui_bar.mainTopicLabel.val('').data('properties', null);
+                    
+                    $.each(lastQuery.contextKeywords, function() {
+                        if (this.isMainTopic) {
+                            util.setMainTopic(this);
+                        } else {
+                            ui_bar.taglist.tagit('createTag', this.text, this);
+                        }
+                    });
+            util.preventQuery = false;
+            //console.log('first',ui_bar.bar[0].clientHeight)
+            util.addRemoveOverflow(ui_bar.bar[0].clientHeight);
+            //console.log('second',ui_bar.bar[0].clientHeight)
+            window.parent.postMessage({event: 'eexcess.searchBarhei',data:ui_bar.bar[0].clientHeight},'*');
+            //console.log('lastquery',lastQuery.contextKeywords[0])
             iframes.sendMsgAll({event: 'eexcess.queryTriggered', data: msg.data.data});
             ui_bar.result_indicator.hide();
             util.hidePopup();
             ui_bar.loader.show();
             util.processQuery(lastQuery, function(response) {
+                
                 if (response.status === 'success') {
                     results = response.data;
+                    //console.log('results',results.profile.contextKeywords[0])
                     ui_bar.loader.hide();
                     ui_bar.result_indicator.text(response.data.totalResults + ' results');
                     ui_bar.result_indicator.show();
                     util.showPopup();
-                    
-                    ui_bar.taglist.tagit('removeAll');
-                    ui_bar.mainTopicLabel.val('').data('properties', null);
-                    
-                    $.each(lastQuery.contextKeywords, function() {
-                    if (this.isMainTopic) {
-                        
-                        util.preventQuery = true;
-                        util.setMainTopic(this);
-                        util.preventQuery = false;
-                        
-                    } else {
-                        
-                        util.preventQuery = true;
-                        ui_bar.taglist.tagit('createTag', this.text, this);
-                        util.preventQuery = false;
-                        
+                    //window.parent.postMessage({event: 'eexcess.searchBarhei',data:ui_bar.bar[0].clientHeight},'*');
+                    if (ui_content.contentArea.is(':visible')) {
+                        iframes.sendMsgAll({event: 'eexcess.newResults', data: results});
                     }
-                    });
-                    //util.setQuery(lastQuery.contextKeywords,0,lastQuery.origin);
-                    //window.console.log('last query', lastQuery);
-                    var sendHeightBar = ui_bar.bar[0].clientHeight;
-                    window.parent.postMessage({event: 'eexcess.searchBarhei',data:sendHeightBar},'*');
-                    //iframes.sendMsgAll({event: 'eexcess.newResults', data: results});
                     if (settings.queryCrumbs.active) {
                         qc.addNewQuery(results);
                         if (typeof settings.queryCrumbs.updateTrigger === 'function') {
@@ -982,6 +998,7 @@ define(['jquery', 'jquery-ui', 'tag-it', 'c4/APIconnector', 'c4/iframes', 'c4/Qu
         } else if(msg.data.event === 'crumbClicked'){
             //console.log('click crumbs')
             crumbClicked = true;
+            util.addRemoveOverflow(ui_bar.bar[0].clientHeight);
         } else if(msg.data.event === 'eexcess.newDashboardSettings'){
             //window.console.log('eexcess.newDashboardSettings', msg.data.settings)
             iframes.sendMsgAll({event:'eexcess.newDashboardSettings',settings:msg.data.settings})
@@ -1017,7 +1034,7 @@ define(['jquery', 'jquery-ui', 'tag-it', 'c4/APIconnector', 'c4/iframes', 'c4/Qu
                     }
                 }
             } else if(!ui_content.contentArea.is(':visible')){
-                iframes.sendMsgAll({event: 'eexcess.newResults', data: results});
+                //iframes.sendMsgAll({event: 'eexcess.newResults', data: results});
                 if (settings.queryCrumbs.active) {
                     if (crumbClicked == false){
                         qc.addNewQuery(results); 
@@ -1069,6 +1086,7 @@ define(['jquery', 'jquery-ui', 'tag-it', 'c4/APIconnector', 'c4/iframes', 'c4/Qu
             });
             var resizeTimer;
             $(window).resize(function(e) {
+                window.parent.postMessage({event: 'eexcess.searchBarhei',data:ui_bar.bar[0].clientHeight},'*');
                 clearTimeout(resizeTimer);
                 resizeTimer = setTimeout(function() {
                     if (popup_dim_pos.control !== 'custom') {
@@ -1221,6 +1239,7 @@ define(['jquery', 'jquery-ui', 'tag-it', 'c4/APIconnector', 'c4/iframes', 'c4/Qu
             util.preventQuery = true;
             ui_bar.taglist.tagit('createTag', keyword.text, keyword);
             util.preventQuery = false;
+            
             util.queryUpdater();
         },
         getCurrentModule: function() {

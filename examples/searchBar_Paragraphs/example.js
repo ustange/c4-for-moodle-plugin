@@ -18,7 +18,8 @@ require(['../config'], function(config) {
                 baseUrl = msg.data.data.baseUrl;
                 api.init({
                     origin: origin,
-                    base_url: baseUrl
+                    base_url: baseUrl,
+                    interests: "interests"
                 });
             }
         });
@@ -56,7 +57,7 @@ require(['../config'], function(config) {
         searchBar.init(tabs, {imgPATH: '../../searchBar/img/', queryCrumbs: {active: true}, origin:origin});
         
         // detect paragraphs
-        var paragraphs = paragraphDetection.getParagraphs();
+        /*var paragraphs = paragraphDetection.getParagraphs();
         // draw silver border around detected paragraphs
         $('.eexcess_detected_par').css('border', '1px dotted silver');
 
@@ -84,7 +85,7 @@ require(['../config'], function(config) {
             }
         });
         // start detection of focused paragraphs
-        paragraphDetection.findFocusedParagraphSimple();
+        paragraphDetection.findFocusedParagraphSimple();*/
     });
 });
 
